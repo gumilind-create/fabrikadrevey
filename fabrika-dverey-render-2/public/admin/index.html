@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="color-scheme" content="light">
+<title>Админка — Фабрика Дверей</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Onest:wght@400;500;600&display=swap">
+<style>
+:root{color-scheme:light;--y:#f4d51c;--bg:#f6f1de;--line:#d9cf9f;--red:#c4170d;--head:"Oswald","Arial Narrow",Impact,sans-serif;--body:"Onest",system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{color:#000}
+body{margin:0;background:var(--bg);font:16px/1.5 var(--body)}
+button,input,select,textarea{font:inherit;color:#000}
+input,select,textarea{width:100%;min-width:0;padding:12px;border:2px solid #000;border-radius:8px;background:#fff}
+::placeholder{color:#5a5646;opacity:1}
+input:focus,select:focus{outline:3px solid var(--y);outline-offset:1px}
+label{display:grid;gap:6px;font-weight:600;font-size:15px;color:#000}
+.lbl{font-weight:600;font-size:15px;margin-bottom:6px}
+h1,h3{font-family:var(--head);text-transform:uppercase;margin:0;color:#000}
+.btn{display:inline-block;background:var(--y);border:2px solid #000;border-radius:8px;padding:11px 18px;font-weight:600;cursor:pointer;text-decoration:none;color:#000;transition:transform .15s,box-shadow .15s}
+.btn:hover{transform:translate(-2px,-2px);box-shadow:3px 3px 0 #000}
+.btn.ghost{background:#fff}
+.btn:disabled{opacity:.6;cursor:wait}
+.brand{font:700 20px var(--head);background:#000;color:var(--y);padding:7px 12px;border-radius:4px;white-space:nowrap}
+.err{color:var(--red);min-height:1.2em;margin:0;font-weight:600}
+#login{min-height:100vh;display:grid;place-items:center;padding:20px;background:#000}
+.lc{background:var(--bg);border:3px solid var(--y);border-radius:16px;padding:32px;width:min(380px,100%);display:grid;gap:16px}
+.lc .brand{justify-self:start}
+.lc h1{font-size:30px}
+.tb{position:-webkit-sticky;position:-webkit-sticky;position:sticky;top:0;z-index:5;display:flex;align-items:center;flex-wrap:wrap;gap:12px 16px;background:#000;padding:12px 20px;border-bottom:3px solid var(--y)}
+.tb .brand{background:none;padding:0}
+.tb span:not(.brand){color:#e6e0c8}
+.tb .sp{flex:1}
+.tb a{color:#fff;font-size:15px}
+#save{padding:9px 16px}
+#save.dirty{animation:pl 1.4s infinite}
+@keyframes pl{50%{box-shadow:0 0 0 6px rgba(244,213,28,.55)}}
+.demo{background:var(--y);color:#000;padding:8px 20px;font-size:14px;font-weight:500;text-align:center;border-bottom:2px solid #000}
+main{max-width:920px;margin:0 auto;padding:22px 20px 80px}
+.tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.tabs button{border:2px solid #000;background:#fff;color:#000;border-radius:99px;padding:9px 22px;font-weight:600;cursor:pointer}
+.tabs button.on{background:#000;color:var(--y)}
+.bar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.row{display:flex;align-items:center;gap:12px;background:#fff;border:2px solid #000;border-radius:12px;padding:12px 14px;margin-bottom:10px;flex-wrap:wrap}
+.row.off{opacity:.6}
+.cv{width:56px;height:70px;flex:none;border:2px solid #000;border-radius:8px;background:#e4e0d2 center/cover no-repeat}
+.rn{flex:1 1 160px;min-width:0}
+.rn b{display:block;color:#000}
+.rn small{color:#2e2b22;font-size:14px}
+.ic{border:2px solid #000;background:#fff;color:#000;border-radius:8px;padding:8px 12px;cursor:pointer;font-weight:500}
+.ic:hover{background:var(--y)}
+.ic.x:hover{background:var(--red);border-color:var(--red);color:#fff}
+.empty{text-align:center;color:#2e2b22;padding:40px 0}
+.card{background:#fff;border:2px solid #000;border-radius:12px;padding:22px;display:grid;gap:14px}
+.hint{color:#2e2b22;font-size:14px;margin:0}
+dialog{border:3px solid #000;border-radius:16px;padding:24px;width:min(560px,calc(100% - 24px));max-height:92vh;background:var(--bg);color:#000}
+dialog::backdrop{background:rgba(0,0,0,.65)}
+dialog form{display:grid;gap:14px}
+dialog h3{font-size:28px}
+.chk label{display:flex;align-items:center;gap:8px}
+.chk input{width:20px;height:20px;padding:0}
+.act{display:flex;gap:10px;justify-content:flex-end}
+.mg{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px;margin-bottom:10px}
+.mg:empty{display:none}
+.mt{position:relative;height:0;padding-top:130%;border:2px solid #000;border-radius:10px;background:#cfcab8 center/cover no-repeat;overflow:hidden}
+.mt button,.mt span,.mt em{position:absolute}
+.mt button{bottom:4px;left:4px;width:28px;height:28px;padding:0;border:2px solid #000;border-radius:50%;background:#fff;cursor:pointer;font-size:14px;line-height:1}
+.mt button.x{left:auto;right:4px;top:4px;bottom:auto}
+.mt button:hover{background:var(--y)}
+.mt button.x:hover{background:var(--red);color:#fff}
+.mt span{left:0;right:0;bottom:0;background:#000;color:var(--y);font-size:12px;font-weight:600;text-align:center;padding:3px}
+.mt em{left:6px;top:6px;background:#000;color:#fff;font-style:normal;font-size:12px;font-weight:600;padding:2px 7px;border-radius:99px}
+#dz.over{outline:3px dashed #000;outline-offset:6px;border-radius:12px}
+.prog{height:12px;border:2px solid #000;border-radius:99px;overflow:hidden;background:#fff;margin-bottom:10px}
+.prog i{display:block;height:100%;width:0;background:var(--y);transition:width .2s}
+.hs{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.hc{background:#fff;border:2px solid #000;border-radius:12px;padding:14px;display:grid;gap:10px;justify-items:start}
+.hp{width:100%;height:230px;border:2px dashed #000;border-radius:10px;background:#f4f4f2 center/contain no-repeat}
+.vp:empty{display:none}
+.vp video{width:min(100%,240px);border-radius:10px;background:#000;border:2px solid #000}
+#toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,90px);background:#000;color:var(--y);padding:12px 22px;border-radius:99px;font-weight:600;transition:transform .3s;z-index:30;max-width:92vw;text-align:center}
+#toast.on{transform:translate(-50%,0)}
+#toast.er{background:var(--red);color:#fff}
+@media (max-width:560px){.tb span:not(.brand){display:none}main{padding:16px 14px 80px}}
+</style>
+</head>
+<body>
+<div id="login"><form class="lc" id="lf">
+ <span class="brand">ФАБРИКА ДВЕРЕЙ</span><h1>Вход в админку</h1>
+ <label>Пароль<input id="pw" type="password" required autocomplete="current-password"></label>
+ <p class="err" id="le"></p>
+ <button class="btn">Войти</button>
+</form></div>
+
+<div id="app" hidden>
+ <div class="demo" id="demo" hidden>Демо-режим: сервер не подключён, изменения сохраняются только в этом браузере, а загрузка файлов недоступна.</div>
+ <header class="tb"><span class="brand">ФАБРИКА ДВЕРЕЙ</span><span>админка</span><i class="sp"></i><a href="/" target="_blank" rel="noopener">На сайт ↗</a><button class="btn ghost" id="save">Сохранено ✓</button><a href="#" id="out">Выйти</a></header>
+ <main>
+  <div class="tabs"><button class="on" data-t="works">Наши работы</button><button data-t="hero">Двери на главной</button><button data-t="set">Видео «Как нас найти»</button></div>
+  <section id="t-works">
+   <div class="bar"><button class="btn" id="add">+ Добавить подборку</button></div>
+   <p class="hint" style="margin:0 0 14px">Подборка это несколько фото и видео одной работы. На сайте по нажатию она открывается на весь экран.</p>
+   <div id="list"></div>
+  </section>
+  <section id="t-hero" hidden>
+   <p class="hint" style="margin:0 0 14px">Три двери в начале сайта, которые открываются по нажатию. Загрузите фото двери, лучше на ровном светлом фоне: фон обрежется сам. Пока фото нет, показываются стандартные двери.</p>
+   <div class="hs" id="hs"></div>
+   <input type="file" id="hf" accept="image/*" hidden>
+  </section>
+  <section id="t-set" hidden>
+   <div class="card"><h3>Видео «Как нас найти»</h3>
+    <p class="hint">Лучше вертикальное видео, как для TikTok или Reels: на сайте оно показывается в вертикальной рамке.</p>
+    <div class="vp" id="vp"></div>
+    <div class="bar" style="margin:0"><button class="btn" id="vb" type="button">Загрузить видео</button><button class="ic" id="vd" type="button" hidden>Убрать видео</button></div>
+    <div class="prog" id="prog2" hidden style="margin:0"><i id="pbar2"></i></div>
+    <input type="file" id="vf" accept="video/mp4,video/quicktime,video/webm,.mp4,.mov,.webm" hidden>
+    <p class="hint">Файл до 100 МБ, лучше MP4 на 20–30 МБ.</p>
+    <label>Или вставьте ссылку на YouTube или TikTok<input id="vu" placeholder="https://..."></label>
+   </div>
+  </section>
+ </main>
+</div>
+
+<dialog id="dlg"><form id="df">
+ <h3 id="dt">Подборка</h3>
+ <label>Название<input name="title" required placeholder="Например: Квартира на Немиге"></label>
+ <label>Описание (необязательно)<input name="text" placeholder="Коротко: какие двери, что сделали"></label>
+ <div id="dz"><div class="lbl">Фото и видео</div>
+  <div class="mg" id="mg"></div>
+  <div class="prog" id="prog" hidden><i id="pbar"></i></div>
+  <button type="button" class="btn" id="pu">+ Добавить фото или видео</button>
+  <p class="hint" style="margin-top:8px">Выберите сразу несколько файлов, перетащите их сюда или вставьте из буфера (Ctrl+V или ⌘V). Видео до 100 МБ, подойдут и вертикальные, и горизонтальные. Первый файл будет обложкой.</p>
+  <input type="file" id="pf" accept="image/*,video/mp4,video/quicktime,video/webm,.mp4,.mov,.webm" multiple hidden>
+ </div>
+ <div class="chk"><label><input type="checkbox" name="hide"> Скрыть с сайта</label></div>
+ <div class="act"><button type="button" class="btn ghost" id="dc">Отмена</button><button class="btn">Готово</button></div>
+</form></dialog>
+<div id="toast"></div>
+
+<script>
+var DEF={"works":[{"id":"w1","title":"Пример: белые двери в квартиру","text":"","items":[{"t":"i","u":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNjAgNDAwIj48cmVjdCB3aWR0aD0iMjYwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2Y0ZjRmMiIvPjxyZWN0IHg9IjYwIiB5PSIzMCIgd2lkdGg9IjE0MCIgaGVpZ2h0PSIzNTAiIGZpbGw9IiNmNGYwZTYiIHN0cm9rZT0iIzAwMDIiIHN0cm9rZS13aWR0aD0iMiIvPjxyZWN0IHg9IjgyIiB5PSI1NiIgd2lkdGg9Ijk2IiBoZWlnaHQ9IjE0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDAwMyIgc3Ryb2tlLXdpZHRoPSIzIi8+PHJlY3QgeD0iODIiIHk9IjIyNiIgd2lkdGg9Ijk2IiBoZWlnaHQ9IjEyMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDAwMyIgc3Ryb2tlLXdpZHRoPSIzIi8+PHJlY3QgeD0iMTcwIiB5PSIyMDQiIHdpZHRoPSIyMiIgaGVpZ2h0PSI3IiByeD0iMyIgZmlsbD0iIzMzMyIvPjwvc3ZnPg=="},{"t":"i","u":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNjAgNDAwIj48cmVjdCB3aWR0aD0iMjYwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2Y0ZjRmMiIvPjxyZWN0IHg9IjYwIiB5PSIzMCIgd2lkdGg9IjE0MCIgaGVpZ2h0PSIzNTAiIGZpbGw9IiNlM2RmZDMiIHN0cm9rZT0iIzAwMDIiIHN0cm9rZS13aWR0aD0iMiIvPjxyZWN0IHg9IjgyIiB5PSI1NiIgd2lkdGg9Ijk2IiBoZWlnaHQ9IjE0MCIgZmlsbD0iI2RmZWFmMCIvPjxyZWN0IHg9IjgyIiB5PSI1NiIgd2lkdGg9Ijk2IiBoZWlnaHQ9IjE0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDAwMyIgc3Ryb2tlLXdpZHRoPSIzIi8+PHJlY3QgeD0iODIiIHk9IjIyNiIgd2lkdGg9Ijk2IiBoZWlnaHQ9IjEyMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDAwMyIgc3Ryb2tlLXdpZHRoPSIzIi8+PHJlY3QgeD0iMTcwIiB5PSIyMDQiIHdpZHRoPSIyMiIgaGVpZ2h0PSI3IiByeD0iMyIgZmlsbD0iIzMzMyIvPjwvc3ZnPg=="},{"t":"i","u":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNjAgNDAwIj48cmVjdCB3aWR0aD0iMjYwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2Y0ZjRmMiIvPjxyZWN0IHg9IjYwIiB5PSIzMCIgd2lkdGg9IjE0MCIgaGVpZ2h0PSIzNTAiIGZpbGw9IiNkOWQ0YzYiIHN0cm9rZT0iIzAwMDIiIHN0cm9rZS13aWR0aD0iMiIvPjxyZWN0IHg9IjgyIiB5PSI1NiIgd2lkdGg9Ijk2IiBoZWlnaHQ9IjE0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDAwMyIgc3Ryb2tlLXdpZHRoPSIzIi8+PHJlY3QgeD0iODIiIHk9IjIyNiIgd2lkdGg9Ijk2IiBoZWlnaHQ9IjEyMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDAwMyIgc3Ryb2tlLXdpZHRoPSIzIi8+PHJlY3QgeD0iMTcwIiB5PSIyMDQiIHdpZHRoPSIyMiIgaGVpZ2h0PSI3IiByeD0iMyIgZmlsbD0iIzMzMyIvPjwvc3ZnPg=="}],"hide":0},{"id":"w2","title":"Пример: двери под дерево","text":"","items":[{"t":"i","u":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNjAgNDAwIj48cmVjdCB3aWR0aD0iMjYwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2Y0ZjRmMiIvPjxyZWN0IHg9IjYwIiB5PSIzMCIgd2lkdGg9IjE0MCIgaGVpZ2h0PSIzNTAiIGZpbGw9IiNjOTlhNjIiIHN0cm9rZT0iIzAwMDIiIHN0cm9rZS13aWR0aD0iMiIvPjxyZWN0IHg9IjgyIiB5PSI1NiIgd2lkdGg9Ijk2IiBoZWlnaHQ9IjE0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDAwMyIgc3Ryb2tlLXdpZHRoPSIzIi8+PHJlY3QgeD0iODIiIHk9IjIyNiIgd2lkdGg9Ijk2IiBoZWlnaHQ9IjEyMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDAwMyIgc3Ryb2tlLXdpZHRoPSIzIi8+PHJlY3QgeD0iMTcwIiB5PSIyMDQiIHdpZHRoPSIyMiIgaGVpZ2h0PSI3IiByeD0iMyIgZmlsbD0iIzMzMyIvPjwvc3ZnPg=="},{"t":"i","u":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNjAgNDAwIj48cmVjdCB3aWR0aD0iMjYwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2Y0ZjRmMiIvPjxyZWN0IHg9IjYwIiB5PSIzMCIgd2lkdGg9IjE0MCIgaGVpZ2h0PSIzNTAiIGZpbGw9IiNhOTc4NGEiIHN0cm9rZT0iIzAwMDIiIHN0cm9rZS13aWR0aD0iMiIvPjxyZWN0IHg9IjgyIiB5PSI1NiIgd2lkdGg9Ijk2IiBoZWlnaHQ9IjE0MCIgZmlsbD0iI2RmZWFmMCIvPjxyZWN0IHg9IjgyIiB5PSI1NiIgd2lkdGg9Ijk2IiBoZWlnaHQ9IjE0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDAwMyIgc3Ryb2tlLXdpZHRoPSIzIi8+PHJlY3QgeD0iODIiIHk9IjIyNiIgd2lkdGg9Ijk2IiBoZWlnaHQ9IjEyMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDAwMyIgc3Ryb2tlLXdpZHRoPSIzIi8+PHJlY3QgeD0iMTcwIiB5PSIyMDQiIHdpZHRoPSIyMiIgaGVpZ2h0PSI3IiByeD0iMyIgZmlsbD0iIzMzMyIvPjwvc3ZnPg=="},{"t":"i","u":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNjAgNDAwIj48cmVjdCB3aWR0aD0iMjYwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2Y0ZjRmMiIvPjxyZWN0IHg9IjYwIiB5PSIzMCIgd2lkdGg9IjE0MCIgaGVpZ2h0PSIzNTAiIGZpbGw9IiNkOWMzYTAiIHN0cm9rZT0iIzAwMDIiIHN0cm9rZS13aWR0aD0iMiIvPjxyZWN0IHg9IjgyIiB5PSI1NiIgd2lkdGg9Ijk2IiBoZWlnaHQ9IjE0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDAwMyIgc3Ryb2tlLXdpZHRoPSIzIi8+PHJlY3QgeD0iODIiIHk9IjIyNiIgd2lkdGg9Ijk2IiBoZWlnaHQ9IjEyMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDAwMyIgc3Ryb2tlLXdpZHRoPSIzIi8+PHJlY3QgeD0iMTcwIiB5PSIyMDQiIHdpZHRoPSIyMiIgaGVpZ2h0PSI3IiByeD0iMyIgZmlsbD0iIzMzMyIvPjwvc3ZnPg=="}],"hide":0},{"id":"w3","title":"Пример: тёмные двери в дом","text":"","items":[{"t":"i","u":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNjAgNDAwIj48cmVjdCB3aWR0aD0iMjYwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2Y0ZjRmMiIvPjxyZWN0IHg9IjYwIiB5PSIzMCIgd2lkdGg9IjE0MCIgaGVpZ2h0PSIzNTAiIGZpbGw9IiM0YTM0MjYiIHN0cm9rZT0iIzAwMDIiIHN0cm9rZS13aWR0aD0iMiIvPjxyZWN0IHg9IjgyIiB5PSI1NiIgd2lkdGg9Ijk2IiBoZWlnaHQ9IjE0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDAwMyIgc3Ryb2tlLXdpZHRoPSIzIi8+PHJlY3QgeD0iODIiIHk9IjIyNiIgd2lkdGg9Ijk2IiBoZWlnaHQ9IjEyMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDAwMyIgc3Ryb2tlLXdpZHRoPSIzIi8+PHJlY3QgeD0iMTcwIiB5PSIyMDQiIHdpZHRoPSIyMiIgaGVpZ2h0PSI3IiByeD0iMyIgZmlsbD0iIzMzMyIvPjwvc3ZnPg=="},{"t":"i","u":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNjAgNDAwIj48cmVjdCB3aWR0aD0iMjYwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2Y0ZjRmMiIvPjxyZWN0IHg9IjYwIiB5PSIzMCIgd2lkdGg9IjE0MCIgaGVpZ2h0PSIzNTAiIGZpbGw9IiMzYjNiM2QiIHN0cm9rZT0iIzAwMDIiIHN0cm9rZS13aWR0aD0iMiIvPjxyZWN0IHg9IjgyIiB5PSI1NiIgd2lkdGg9Ijk2IiBoZWlnaHQ9IjE0MCIgZmlsbD0iI2RmZWFmMCIvPjxyZWN0IHg9IjgyIiB5PSI1NiIgd2lkdGg9Ijk2IiBoZWlnaHQ9IjE0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDAwMyIgc3Ryb2tlLXdpZHRoPSIzIi8+PHJlY3QgeD0iODIiIHk9IjIyNiIgd2lkdGg9Ijk2IiBoZWlnaHQ9IjEyMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDAwMyIgc3Ryb2tlLXdpZHRoPSIzIi8+PHJlY3QgeD0iMTcwIiB5PSIyMDQiIHdpZHRoPSIyMiIgaGVpZ2h0PSI3IiByeD0iMyIgZmlsbD0iIzMzMyIvPjwvc3ZnPg=="}],"hide":0}],"hero":["","",""],"video":""},D=null,tok=localStorage.getItem('tok')||'',demo=false,dirty=false,cur=-1,MD=[],HI=0;
+var $=function(i){return document.getElementById(i)};
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function clone(o){return JSON.parse(JSON.stringify(o))}
+function toast(m,e){var t=$('toast');t.textContent=m;t.className='on'+(e?' er':'');setTimeout(function(){t.className=''},3200)}
+function api(m,u,b){return fetch('/api/'+u,{method:m,headers:{'content-type':'application/json',authorization:'Bearer '+tok},body:b?JSON.stringify(b):undefined})}
+function mark(){var s=$('save');s.className='btn'+(dirty?' dirty':' ghost');s.textContent=dirty?'Сохранить изменения':'Сохранено ✓'}
+function touch(){dirty=true;mark()}
+function demoData(){try{return JSON.parse(localStorage.getItem('demo2')||'null')}catch(e){return null}}
+function busy(id,t){var b=$(id);if(t){b.dataset.t=b.textContent;b.textContent=t;b.disabled=true}else{b.textContent=b.dataset.t;b.disabled=false}}
+
+$('lf').onsubmit=function(e){
+ e.preventDefault();$('le').textContent='';
+ api('POST','login',{password:$('pw').value})
+ .then(function(r){return r.json().then(function(j){return[r,j]},function(){return[r,null]})})
+ .then(function(x){var r=x[0],j=x[1];if(!j)throw 0;if(!r.ok){$('le').textContent=j.error||'Ошибка';return}tok=j.token;localStorage.setItem('tok',tok);start()})
+ .catch(function(){demo=true;start()});
+};
+function start(){
+ $('login').hidden=true;$('app').hidden=false;
+ if(demo)return load(demoData());
+ api('GET','catalog').then(function(r){return r.json()}).then(load).catch(function(){demo=true;load(demoData())});
+}
+function load(d){D=d&&d.works?d:clone(DEF);D.hero=D.hero||['','',''];$('demo').hidden=!demo;mark();draw()}
+if(tok)start();
+
+// ---------- обработка файлов ----------
+function guess(f){return f.type||{mp4:'video/mp4',mov:'video/quicktime',webm:'video/webm'}[(f.name.split('.').pop()||'').toLowerCase()]||''}
+function shrink(file,max){return new Promise(function(ok,no){
+ var img=new Image(),u=URL.createObjectURL(file);
+ img.onload=function(){var s=Math.min(1,max/Math.max(img.width,img.height)),c=document.createElement('canvas');
+  c.width=Math.round(img.width*s);c.height=Math.round(img.height*s);
+  var x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(img,0,0,c.width,c.height);
+  URL.revokeObjectURL(u);c.toBlob(function(b){b?ok(b):no(new Error('Не удалось обработать фото'))},'image/jpeg',.85)};
+ img.onerror=function(){no(new Error('Не удалось открыть фото'))};img.src=u})}
+function trim(file){return new Promise(function(ok,no){
+ var img=new Image(),u=URL.createObjectURL(file);
+ img.onload=function(){URL.revokeObjectURL(u);
+  var s=Math.min(1,1400/Math.max(img.width,img.height)),w=Math.round(img.width*s),h=Math.round(img.height*s),c=document.createElement('canvas');c.width=w;c.height=h;
+  var x=c.getContext('2d');x.drawImage(img,0,0,w,h);var d=x.getImageData(0,0,w,h).data;
+  function px(a,b){var i=(b*w+a)*4;return[d[i],d[i+1],d[i+2]]}
+  var cs=[px(2,2),px(w-3,2),px(2,h-3),px(w-3,h-3)],bg=[0,1,2].map(function(k){return(cs[0][k]+cs[1][k]+cs[2][k]+cs[3][k])/4});
+  var x0=w,y0=h,x1=0,y1=0;
+  for(var yy=0;yy<h;yy+=2)for(var xx=0;xx<w;xx+=2){var i=(yy*w+xx)*4;
+   if(Math.abs(d[i]-bg[0])+Math.abs(d[i+1]-bg[1])+Math.abs(d[i+2]-bg[2])>48){if(xx<x0)x0=xx;if(xx>x1)x1=xx;if(yy<y0)y0=yy;if(yy>y1)y1=yy}}
+  if(x1-x0<w*.15||y1-y0<h*.15){x0=0;y0=0;x1=w-1;y1=h-1}
+  var cw=x1-x0+1,ch=y1-y0+1,o=document.createElement('canvas');o.width=cw;o.height=ch;o.getContext('2d').drawImage(c,x0,y0,cw,ch,0,0,cw,ch);
+  o.toBlob(function(b){b?ok(b):no(new Error('Не удалось обработать фото'))},'image/jpeg',.9)};
+ img.onerror=function(){no(new Error('Не удалось открыть фото'))};img.src=u})}
+function poster(file){return new Promise(function(ok){
+ var v=document.createElement('video'),u=URL.createObjectURL(file),done=false;
+ function fin(r){if(done)return;done=true;URL.revokeObjectURL(u);ok(r)}
+ v.muted=true;v.setAttribute('playsinline','');v.preload='metadata';v.src=u;
+ v.onloadedmetadata=function(){try{v.currentTime=Math.min(0.5,(v.duration||1)/4)}catch(e){fin({w:v.videoWidth,h:v.videoHeight})}};
+ v.onseeked=function(){var w=v.videoWidth,h=v.videoHeight,s=Math.min(1,900/Math.max(w,h)),c=document.createElement('canvas');c.width=Math.round(w*s);c.height=Math.round(h*s);
+  try{c.getContext('2d').drawImage(v,0,0,c.width,c.height);c.toBlob(function(b){fin({blob:b,w:w,h:h})},'image/jpeg',.82)}catch(e){fin({w:w,h:h})}};
+ v.onerror=function(){fin({})};setTimeout(function(){fin({})},8000)})}
+function up(blob,type,prog){return new Promise(function(ok,no){
+ if(demo)return no(new Error('В демо-режиме загрузка недоступна: нужен подключённый сервер'));
+ var x=new XMLHttpRequest();x.open('POST','/api/upload');
+ x.setRequestHeader('content-type',type);x.setRequestHeader('authorization','Bearer '+tok);
+ x.upload.onprogress=function(e){if(e.lengthComputable&&prog)prog(Math.round(e.loaded/e.total*100))};
+ x.onload=function(){var j={};try{j=JSON.parse(x.responseText)}catch(e){}if(x.status===200&&j.url)ok(j.url);else no(new Error(j.error||'Ошибка загрузки'))};
+ x.onerror=function(){no(new Error('Нет связи с сервером'))};x.send(blob)})}
+
+// ---------- подборки ----------
+function cover(w){var it=w.items[0];return it?(it.t==='v'?(it.p||''):it.u):''}
+function draw(){drawWorks();drawHero();drawVideo()}
+function drawWorks(){
+ $('list').innerHTML=D.works.map(function(w,i){var n=w.items.length,v=w.items.filter(function(x){return x.t==='v'}).length,c=cover(w);
+  return'<div class="row'+(w.hide?' off':'')+'"><div class="cv"'+(c?' style="background-image:url('+esc(c)+')"':'')+'></div><div class="rn"><b>'+esc(w.title||'Без названия')+'</b><small>'+(n-v)+' фото · '+v+' видео'+(w.hide?' · скрыта':'')+'</small></div><button class="ic" data-u="'+i+'" aria-label="Выше">↑</button><button class="ic" data-e="'+i+'">Изменить</button><button class="ic x" data-x="'+i+'" aria-label="Удалить">✕</button></div>'
+ }).join('')||'<p class="empty">Подборок пока нет. Нажмите «Добавить подборку».</p>';
+}
+$('list').onclick=function(e){
+ var b=e.target.closest('button');if(!b)return;var d=b.dataset;
+ if(d.e!=null)edit(+d.e);
+ if(d.x!=null&&confirm('Удалить подборку «'+D.works[d.x].title+'»?')){D.works.splice(+d.x,1);touch();drawWorks()}
+ if(d.u!=null&&+d.u>0){var w=D.works,i=+d.u,t=w[i];w[i]=w[i-1];w[i-1]=t;touch();drawWorks()}
+};
+$('add').onclick=function(){edit(-1)};
+function drawMg(){$('mg').innerHTML=MD.map(function(m,j){var t=m.t==='v'?m.p:m.u;
+ return'<div class="mt"'+(t?' style="background-image:url('+esc(t)+')"':'')+'>'+(m.t==='v'?'<em>▶ видео</em>':'')+(j?'<button type="button" data-m="'+j+'" title="Сделать обложкой">★</button>':'<span>Обложка</span>')+'<button type="button" class="x" data-r="'+j+'" title="Убрать">✕</button></div>'}).join('')}
+function edit(i){
+ cur=i;var f=$('df').elements,w=i<0?{title:'',text:'',items:[],hide:0}:D.works[i];
+ $('dt').textContent=i<0?'Новая подборка':'Изменить подборку';
+ f.title.value=w.title||'';f.text.value=w.text||'';f.hide.checked=!!w.hide;
+ MD=clone(w.items||[]);drawMg();$('dlg').showModal();
+}
+$('mg').onclick=function(e){var b=e.target.closest('button');if(!b)return;
+ if(b.dataset.r!=null)MD.splice(+b.dataset.r,1);
+ if(b.dataset.m!=null)MD.unshift(MD.splice(+b.dataset.m,1)[0]);
+ drawMg()};
+function pg(p){$('pbar').style.width=p+'%'}
+function one(f){var t=guess(f);
+ if(t.indexOf('image/')===0)return shrink(f,1600).then(function(b){return up(b,'image/jpeg',pg)}).then(function(u){MD.push({t:'i',u:u});drawMg()});
+ if(f.size>100e6)return Promise.reject(new Error('Видео больше 100 МБ'));
+ return poster(f).then(function(r){
+  var pu=r.blob?up(r.blob,'image/jpeg'):Promise.resolve('');
+  return pu.then(function(p){return up(f,t,pg).then(function(u){MD.push({t:'v',u:u,p:p,w:r.w||0,h:r.h||0});drawMg()})})})}
+function addFiles(list){
+ var fs=Array.prototype.filter.call(list,function(f){return/^(image|video)\//.test(guess(f))});
+ if(!fs.length){toast('Нужны фото или видео',1);return}
+ busy('pu','Загружаю…');$('prog').hidden=false;
+ fs.reduce(function(p,f){return p.then(function(){return one(f)})},Promise.resolve())
+ .catch(function(e){toast(e.message||'Не удалось загрузить файл',1)}).then(function(){busy('pu');$('prog').hidden=true;pg(0)});
+}
+$('pu').onclick=function(){$('pf').click()};
+$('pf').onchange=function(){addFiles(this.files);this.value=''};
+var dz=$('dz');
+dz.ondragover=function(e){e.preventDefault();dz.classList.add('over')};
+dz.ondragleave=function(){dz.classList.remove('over')};
+dz.ondrop=function(e){e.preventDefault();dz.classList.remove('over');addFiles(e.dataTransfer.files)};
+$('dlg').addEventListener('dragover',function(e){e.preventDefault()});
+$('dlg').addEventListener('drop',function(e){e.preventDefault()});
+$('dlg').addEventListener('paste',function(e){var fs=[];Array.prototype.forEach.call((e.clipboardData&&e.clipboardData.items)||[],function(it){if(it.kind==='file'&&/^(image|video)\//.test(it.type))fs.push(it.getAsFile())});if(fs.length){e.preventDefault();addFiles(fs)}});
+$('dc').onclick=function(){$('dlg').close()};
+$('df').onsubmit=function(e){
+ e.preventDefault();var f=this.elements;
+ if(!MD.length){toast('Добавьте хотя бы одно фото или видео',1);return}
+ var w=cur<0?{id:Math.random().toString(36).slice(2,9)}:D.works[cur];
+ w.title=f.title.value.trim();w.text=f.text.value.trim();w.hide=+f.hide.checked;w.items=clone(MD);
+ if(cur<0)D.works.unshift(w);
+ touch();drawWorks();$('dlg').close();
+};
+
+// ---------- двери на главной ----------
+var HN=['Слева','По центру','Справа'];
+function drawHero(){$('hs').innerHTML=HN.map(function(n,i){var u=D.hero[i];
+ return'<div class="hc"><b>'+n+'</b><div class="hp"'+(u?' style="background-image:url('+esc(u)+')"':'')+'></div><button type="button" class="btn ghost" data-h="'+i+'">Загрузить фото</button><button type="button" class="ic" data-z="'+i+'"'+(u?'':' hidden')+'>Вернуть стандартную</button></div>'}).join('')}
+$('hs').onclick=function(e){var b=e.target.closest('button');if(!b)return;
+ if(b.dataset.h!=null){HI=+b.dataset.h;$('hf').click()}
+ if(b.dataset.z!=null){D.hero[+b.dataset.z]='';touch();drawHero()}};
+$('hf').onchange=function(){var f=this.files[0];this.value='';if(!f)return;
+ var b=document.querySelector('[data-h="'+HI+'"]'),i=HI;b.disabled=true;b.textContent='Загружаю…';
+ trim(f).then(function(bl){return up(bl,'image/jpeg')}).then(function(u){D.hero[i]=u;touch()})
+ .catch(function(e){toast(e.message||'Не удалось загрузить фото',1)}).then(drawHero)};
+
+// ---------- видео «Как нас найти» ----------
+function drawVideo(){var v=D.video||'',u=v.indexOf('/uploads/')===0;
+ $('vp').innerHTML=u?'<video src="'+esc(v)+'" controls playsinline preload="metadata"></video>':'';
+ $('vd').hidden=!v;$('vu').value=u?'':v}
+$('vb').onclick=function(){$('vf').click()};
+$('vd').onclick=function(){D.video='';touch();drawVideo()};
+$('vu').oninput=function(){D.video=this.value.trim();touch()};
+$('vf').onchange=function(){var f=this.files[0];this.value='';if(!f)return;
+ var t=guess(f);
+ if(t.indexOf('video/')!==0){toast('Нужен файл MP4, MOV или WebM',1);return}
+ if(f.size>100e6){toast('Файл больше 100 МБ',1);return}
+ busy('vb','Загружаю…');$('prog2').hidden=false;
+ up(f,t,function(p){$('pbar2').style.width=p+'%'}).then(function(u){D.video=u;touch();drawVideo();toast('Видео загружено. Нажмите «Сохранить»')})
+ .catch(function(e){toast(e.message||'Не удалось загрузить видео',1)}).then(function(){busy('vb');$('prog2').hidden=true;$('pbar2').style.width='0'})};
+
+document.querySelectorAll('.tabs button').forEach(function(b){b.onclick=function(){
+ document.querySelectorAll('.tabs button').forEach(function(x){x.classList.toggle('on',x===b)});
+ ['works','hero','set'].forEach(function(t){$('t-'+t).hidden=t!==b.dataset.t});
+}});
+$('save').onclick=function(){
+ if(demo){localStorage.setItem('demo2',JSON.stringify(D));dirty=false;mark();toast('Сохранено (демо)');return}
+ api('PUT','catalog',D).then(function(r){
+  if(r.status===401){localStorage.removeItem('tok');location.reload();return}
+  if(!r.ok)throw 0;dirty=false;mark();toast('Сохранено. Сайт обновлён');
+ }).catch(function(){toast('Не удалось сохранить',1)});
+};
+$('out').onclick=function(e){e.preventDefault();localStorage.removeItem('tok');location.reload()};
+window.onbeforeunload=function(){if(dirty)return'Есть несохранённые изменения'};
+</script>
+</body>
+</html>
